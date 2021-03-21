@@ -3,9 +3,20 @@ import { FiEdit3, FiTrash } from 'react-icons/fi';
 
 import { Container } from './styles';
 import api from '../../services/api';
+import { FoodInterface } from '../../types';
 
-class Food extends Component {
-  constructor(props) {
+interface FoodProps {
+  food: FoodInterface;
+  onEditFood: (food:FoodInterface) => void;
+  onDelete: (foodId:number) => void;
+}
+
+interface FoodState {
+  isAvailable: boolean;
+}
+
+class Food extends Component<FoodProps, FoodState>{
+  constructor(props:FoodProps) {
     super(props);
 
     const { available } = this.props.food;
@@ -27,14 +38,14 @@ class Food extends Component {
   }
 
   setEditingFood = () => {
-    const { food, handleEditFood } = this.props;
+    const { food, onEditFood } = this.props;
 
-    handleEditFood(food);
+    onEditFood(food);
   }
 
   render() {
     const { isAvailable } = this.state;
-    const { food, handleDelete } = this.props;
+    const { food, onDelete } = this.props;
 
     return (
       <Container available={isAvailable}>
@@ -62,7 +73,7 @@ class Food extends Component {
             <button
               type="button"
               className="icon"
-              onClick={() => handleDelete(food.id)}
+              onClick={() => onDelete(food.id)}
               data-testid={`remove-food-${food.id}`}
             >
               <FiTrash size={20} />

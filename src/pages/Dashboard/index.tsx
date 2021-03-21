@@ -6,13 +6,26 @@ import Food from '../../components/Food';
 import ModalAddFood from '../../components/ModalAddFood';
 import ModalEditFood from '../../components/ModalEditFood';
 import { FoodsContainer } from './styles';
+import { FoodInterface, FoodAdding } from '../../types';
 
-class Dashboard extends Component {
-  constructor(props) {
+
+interface DashboardProps {
+  
+}
+
+interface DashboardState {
+  foods: FoodInterface[];
+  editingFood: FoodInterface;
+  modalOpen: boolean;
+  editModalOpen: boolean;
+}
+
+class Dashboard extends Component<{}, DashboardState> {
+  constructor(props: DashboardProps) {
     super(props);
     this.state = {
       foods: [],
-      editingFood: {},
+      editingFood: {} as FoodInterface,
       modalOpen: false,
       editModalOpen: false,
     }
@@ -24,7 +37,7 @@ class Dashboard extends Component {
     this.setState({ foods: response.data });
   }
 
-  handleAddFood = async food => {
+  handleAddFood = async (food:FoodAdding) => {
     const { foods } = this.state;
 
     try {
@@ -39,7 +52,7 @@ class Dashboard extends Component {
     }
   }
 
-  handleUpdateFood = async food => {
+  handleUpdateFood = async (food:FoodInterface) => {
     const { foods, editingFood } = this.state;
 
     try {
@@ -58,7 +71,7 @@ class Dashboard extends Component {
     }
   }
 
-  handleDeleteFood = async id => {
+  handleDeleteFood = async (id: number) => {
     const { foods } = this.state;
 
     await api.delete(`/foods/${id}`);
@@ -80,7 +93,7 @@ class Dashboard extends Component {
     this.setState({ editModalOpen: !editModalOpen });
   }
 
-  handleEditFood = food => {
+  handleEditFood = (food: FoodInterface) => {
     this.setState({ editingFood: food, editModalOpen: true });
   }
 
@@ -93,13 +106,13 @@ class Dashboard extends Component {
         <ModalAddFood
           isOpen={modalOpen}
           setIsOpen={this.toggleModal}
-          handleAddFood={this.handleAddFood}
+          onAddFood={this.handleAddFood}
         />
         <ModalEditFood
           isOpen={editModalOpen}
           setIsOpen={this.toggleEditModal}
           editingFood={editingFood}
-          handleUpdateFood={this.handleUpdateFood}
+          onUpdateFood={this.handleUpdateFood}
         />
 
         <FoodsContainer data-testid="foods-list">
@@ -108,8 +121,8 @@ class Dashboard extends Component {
               <Food
                 key={food.id}
                 food={food}
-                handleDelete={this.handleDeleteFood}
-                handleEditFood={this.handleEditFood}
+                onDelete={this.handleDeleteFood}
+                onEditFood={this.handleEditFood}
               />
             ))}
         </FoodsContainer>
